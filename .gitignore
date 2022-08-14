@@ -3,4 +3,4 @@
 *.bin
 *.obj
 *.RoboHub.njsproj
-*RoboHub.njsproj.user
+*.RoboHub.njsproj.user
