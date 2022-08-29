@@ -1,6 +1,6 @@
 # RoboHub
 
-JSON FORMAT TO FOR EVERYTHING EXCEPT UPLOADS
+JSON FORMAT FOR EVERYTHING EXCEPT UPLOADS
 ============================================
 ```
 [
