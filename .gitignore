@@ -1,6 +1,6 @@
-*.uploads
-*.node_modules
-*.bin
-*.obj
+*uploads
+*node_modules
+*bin
+*obj
 *.RoboHub.njsproj
 *.RoboHub.njsproj.user
