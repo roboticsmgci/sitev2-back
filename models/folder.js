@@ -5,8 +5,8 @@ const Schema = new mongoose.Schema({
     folderContent: { type: [String], required: true },
     metaData: { type: JSON, required: true },
     path: { type: String, required: true },
-    cDirs: { type: [String], required: true },
-    cFiles: { type: [String], required: true }
+    cDirs: { type: [mongoose.Types.ObjectId], required: true },
+    cFiles: { type: [mongoose.Types.ObjectId], required: true }
 })
 
 let Folder = mongoose.model("Folder", Schema)

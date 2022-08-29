@@ -56,7 +56,7 @@ module.exports = (upload) => {
                                         path: tool.pathStringify(req.originalUrl, 1),
                                         folderName: tool.pathTop(req.originalUrl)
                                     },
-                                    { $push: { cFiles: fileThing._id.toString() } },
+                                    { $push: { cFiles: fileThing._id } },
                                     function (err, result) {
                                         if (err) {
                                             console.log(err);

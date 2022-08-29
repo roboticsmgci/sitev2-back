@@ -66,7 +66,7 @@ router.route('/*')
                 })
                     .then((file) => {
                         if (file != null) {
-                            gfs.find({ _id: mongoose.Types.ObjectId(file.file[0]) }).toArray((err, fileData) => {
+                            gfs.find({ _id: file.file[0] }).toArray((err, fileData) => {
                                 if (err != null) {
                                     return console.log(err);
                                 }
@@ -114,7 +114,7 @@ router.route('/*')
                                             path: tool.pathStringify(req.originalUrl, 1),
                                             folderName: tool.pathTop(req.originalUrl)
                                         },
-                                        { $push: { cDirs: folderthing._id.toString() } },
+                                        { $push: { cDirs: folderthing._id } },
                                         function (err, result) {
                                             if (err) {
                                                 console.log(err);
@@ -144,7 +144,7 @@ router.route('/*')
                                             path: tool.pathStringify(req.originalUrl, 1),
                                             folderName: tool.pathTop(req.originalUrl)
                                         },
-                                        { $push: { cFiles: fileThing._id.toString() } },
+                                        { $push: { cFiles: fileThing._id } },
                                         function (err, result) {
                                             if (err) {
                                                 console.log(err);
