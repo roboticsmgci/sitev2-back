@@ -24,6 +24,7 @@ JSON FORMAT TO FOR EVERYTHING EXCEPT UPLOADS
 - To upload a new file, send a POST request to that url in the file system replacing root with upload, url/upload/folder/nextfolder/
 
 [^1]: Files currently send a download stream of the chunks, will edit later to give json
+#### File Schema
 ```
 {
     fileName: String,
@@ -34,7 +35,8 @@ JSON FORMAT TO FOR EVERYTHING EXCEPT UPLOADS
 }
 ```
 
-[^2]: Folders currently only send a json file structured as
+[^2]: Folders currently only send a json file
+#### Folder Schema
 ```
 {
     folderName: String,
