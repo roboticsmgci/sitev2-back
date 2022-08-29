@@ -17,12 +17,34 @@ JSON FORMAT TO FOR EVERYTHING EXCEPT UPLOADS
 
 - To create a new directory or file, send a POST request to that url in the file system replacing root with files, http://localhost:1337/files/
 
-- To grab the data of a file, send a GET request to that url in the file system replacing root with files, http://localhost:1337/files/sheesh.txt
+- To grab the data of a file, send a GET request[^1] to that url in the file system replacing root with files, http://localhost:1337/files/sheesh.txt
 
-- To grab the data of a folder, send a GET request to that url in the file system replacing root with files, http://localhost:1337/files/damn
-### NOTE THAT FOLDERS GIVE JSON WHILE FILES GIVE A DOWNLOAD STREAM FOR NOW **WILL CHANGE**
+- To grab the data of a folder, send a GET request[^2] to that url in the file system replacing root with files, http://localhost:1337/files/damn
 
 - To upload a new file, send a POST request to that url in the file system replacing root with upload, url/upload/folder/nextfolder/
+
+[^1] Files currently send a download stream of the chunks, will edit later to give json
+```
+{
+    fileName: String,
+    fileExtension: String
+    file: [ObjectID],
+    metaData: JSON,
+    path: String,
+}
+```
+
+[^2] Folders currently only send a json file structured as
+```
+{
+    folderName: String,
+    folderContent: String,
+    metaData: JSON,
+    path: String,
+    cDirs: [ObjectID],
+    cFiles: [ObjectID]
+}
+```
 
 ---
 
