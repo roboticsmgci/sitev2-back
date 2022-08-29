@@ -1,9 +1,9 @@
 'use strict';
 var express = require('express');
 var router = express.Router();
-var tool = require('../tools/fileTool');
 var folderSchema = require("../models/folder");
 var fileSchema = require("../models/file");
+const tool = require('../tools/fileTool');
 
 router.route('/')
 
@@ -12,42 +12,48 @@ router.route('/')
     })
     // if a post request is ever made
     .post((req, res) => {
+        console.log("INDEX.JS POST");
+        req.body.forEach(function (item) {
+            tool.neighbourNames(null, 2)
+                .then((nameCheck) => {
+                    console.log(nameCheck);
+                    // checks if the item to be added is a folder
+                    if (item.type == 'folder' && !nameCheck.includes(item.name + item.extension)) {
+                        let newFolder = new folderSchema({
+                            folderName: item.name + item.extension,
+                            folderContent: [],
+                            metaData: item.data,
+                            path: ',',
+                            cDir: [],
+                            cFiles: [],
+                        });
 
-        var item = req.body;
-        // checks if the item to be added is a folder
-        if (item.type == 'folder') {
-            let newFolder = new folderSchema({
-                folderName: item.name,
-                folderContent: [],
-                metaData: item.data,
-                path: ',' + item.name + ',',
-                cDir: [],
-                cFiles: [],
-            });
+                        console.log(item);
+                        newFolder.save()
+                            .then((folderthing) => {
+                                res.send(folderthing);
+                            })
+                            .catch(err => res.status(500).json(err));
+                    }
 
-            console.log(item);
-            newFolder.save()
-                .then((folderthing) => {
-                    res.send(folderthing);
+                    else if (!nameCheck.includes(item.name + item.extension)) {
+                        let newFile = new fileSchema({
+                            fileName: item.name,
+                            fileExtension: item.extension,
+                            file: [],
+                            metadata: item.data,
+                            path: ',',
+                        });
+
+                        newFile.save()
+                            .then((fileThing) => {
+                                res.send(fileThing);
+                            })
+                            .catch(err => res.status(500).json(err));
+                    }
                 })
-                .catch(err => res.status(500).json(err));
-        }
-
-        else {
-            let newFile = new fileSchema({
-                fileName: item.name,
-                fileExtension: item.extension,
-                file: [],
-                metadata: item.data,
-                path: pathString + item.name + item.extension + ',',
-            });
-
-            newFile.save()
-                .then((fileThing) => {
-                    res.send(fileThing);
-                })
-                .catch(err => res.status(500).json(err));
-        };
+                .catch(err => console.log(err));
+        });
     });
 
 module.exports = router;

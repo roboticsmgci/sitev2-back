@@ -45,14 +45,17 @@ module.exports = (upload) => {
                             fileExtension: fileExtension,
                             file: [file.id],
                             metaData: {},
-                            path: pathString + file.originalname + ',',
+                            path: pathString,
                         });
 
                         // saves the file and updates it's parent folder to include it's id
                         newFile.save()
                             .then((fileThing) => {
                                 folderSchema.updateMany(
-                                    { path: pathString },
+                                    {
+                                        path: tool.pathStringify(req.originalUrl, 1),
+                                        folderName: tool.pathTop(req.originalUrl)
+                                    },
                                     { $push: { cFiles: fileThing._id.toString() } },
                                     function (err, result) {
                                         if (err) {

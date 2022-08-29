@@ -2,12 +2,28 @@ fileSchema = require("../models/file");
 folderSchema = require("../models/folder");
 var mongoose = require("mongoose");
 
+/* Currently this file tool gives functions to:
+ 
+- pathStringify: 
+    turn the url string into a database PATH
+
+- neighbours: 
+    grab the all the files and folders which have a PATH string equal to the one given
+
+- names: 
+    get the names of an array of documents by concatenating them
+
+- neighbourNames: 
+    gets the names of the descendents of a folder by using it's PATH and calling `neighbours` and `names`
+
+*/
+
 module.exports = {
 
     //turns a path like /upload/users/icecream/pawn.jpg into [,root,users,icecream,pawn.jpg]
-    pathStringify: function (rawPath) {
+    pathStringify: function (rawPath, back = 0) {
 
-        // turns a path like /stupid/users/icecream/pawn.jpg into ["root", "users", "icecream", "pawn.jpg"]
+        // turns a path like /stupid/users/icecream/ into ["root", "users", "icecream"]
         let path = rawPath.substring(1).split('/');
         path[0] = 'root';
 
@@ -18,31 +34,48 @@ module.exports = {
         var pathString = ',';
 
         //turns the path into a string like [,root,users,icecream,pawn.jpg]
-        for (let i = 0; i < path.length; i++) {
+        for (let i = 0; i < path.length - back; i++) {
             pathString += path[i] + ',';
         };
-
+        console.log(pathString);
         return pathString
+    },
+
+    pathTop: function (rawPath) {
+        let path = rawPath.substring(1).split('/');
+
+        path[0] = 'root';
+
+        if (path.at(-1) == '') {
+            path.pop();
+        };
+
+        return path.at(-1);
     },
 
     neighbours: function (path, type) {
         // returns an array of all the files in the same directory
         return new Promise((res, rej) => {
-            folderSchema.findOne({ path: path })
+            folderSchema.find({ path: path })
                 .then((folder) => {
-                    console.log(folder);
-                    if (folder == null) {
-                        return res([], []);
-                    }
-                    else if (type == 0) {
-                        return res([folder.cFiles]);
-                    }
-                    else if (type == 1) {
-                        return res([folder.cDirs]);
-                    }
-                    else if (type == 2) {
-                        return res([folder.cFiles, folder.cDirs]);
-                    }
+                    fileSchema.find({ path: path })
+                        .then((file) => {
+                            console.log(folder);
+                            if (folder == null) {
+                                return res([], []);
+                            }
+                            else if (type == 0) {
+                                return res([file]);
+                            }
+                            else if (type == 1) {
+                                return res([folder]);
+                            }
+                            else if (type == 2) {
+                                return res([folder, file]);
+                            }
+                        })
+                        .catch(err => rej(err));
+                    
                 })
                 .catch(err => rej(err));
         });
@@ -52,33 +85,22 @@ module.exports = {
     // returns a promise containing the names of the folder/file ids it is given
     names: function (ids) {
 
-        // turns the string array of ids into an array of Object Id's
-        var fileIds = ids[0].map(function (id) { return new mongoose.Types.ObjectId(id); });
-        var folderIds = ids[1].map(function (id) { return new mongoose.Types.ObjectId(id); });
-        console.log(fileIds);
-        console.log(folderIds);
+        const folder = ids[0];
+        const file = ids[1];
+        console.log(file);
+        console.log(folder);
+        var nameList = []
 
-        // returns a promise which contains the querys of which files/folders the id's point to
-        return new Promise((res, rej) => {
-
-            // searches the file db
-            fileSchema.find({ _id: {$in: fileIds } })
-                .then((files) => {
-                    // takes each file found and takes it's name + extension
-                    const fileArray = files.map(file => file.fileName + file.fileExtension);
-
-                    // searches the folder db
-                    folderSchema.find({ _id: {$in: folderIds } })
-                        .then((folders) => {
-                            // takes each folder and takes it's name
-                            const folderArray = folders.map(folder => folder.folderName);
-                            // returns the list of names combined
-                            return res(fileArray.concat(folderArray))
-                        })
-                        .catch(err => rej(err));
-                })
-                .catch(err => rej(err));
+        folder.forEach(function (item) {
+            nameList.push(item.folderName)
         });
+
+        file.forEach(function (item) {
+            nameList.push(item.fileName + item.fileExtension)
+        });
+        console.log("KIWRFHAIRH")
+        console.log(nameList);
+        return nameList;
     },
 
     // returns a promise containing the names of the folder/file neighbours (children) of the current folder path
@@ -87,15 +109,9 @@ module.exports = {
         return new Promise((res, rej) => {
             // gets the id's of it's neighbours first
             this.neighbours(path, type)
-                .then((ids) => {
-                    console.log(ids);
+                .then((documents) => {
                     // turns the list of id's into a list of names
-                    this.names(ids)
-                        .then((Array) => {
-                            //returns the list
-                            return res(Array);
-                        })
-                        .catch(err => rej(err));
+                    return res(this.names(documents));
 
                 })
                 .catch(err => rej(err));
