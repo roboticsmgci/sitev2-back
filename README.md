@@ -1,30 +1,33 @@
 # RoboHub
 
-To create add a new root directory, send a POST request to home page, url/
+JSON FORMAT TO FOR EVERYTHING EXCEPT UPLOADS
+============================================
+```
+[
+    {
+        "type": "folder",
+        "name": "Images",
+        "extension": "",
+        "data": {}
+    }
+]
+```
 
-The POST request should look like:
-{
-// to add
-}
+To create add a new root directory, send a POST request to the home page, http://localhost:1337/
 
-To create a new directory or file, send a POST request to that url in the file system replacing root with files, url/files/folder/nextfolder
+To create a new directory or file, send a POST request to that url in the file system replacing root with files, http://localhost:1337/files/
 
-The POST request should look like:
-{
-  type: 
-  // to add
-}
+To grab the data of a file, send a GET request to that url in the file system replacing root with files, http://localhost:1337/files/sheesh.txt
 
-To upload a new directory or folder, send a POST request to that url in the file system replacing root with upload, url/upload/folder/nextfolder/
+To grab the data of a folder, send a GET request to that url in the file system replacing root with files, http://localhost:1337/files/damn
+# NOTE THAT FOLDERS GIVE JSON WHILE FILES GIVE A DOWNLOAD STREAM FOR NOW **WILL CHANGE**
 
-The POST request should look like:
-{
-  type: 
-  // to add
-}
+To upload a new file, send a POST request to that url in the file system replacing root with upload, url/upload/folder/nextfolder/
 
 // TODO
 // Add editing of files *PUT*
-// Add routing to open and run files
+// Grabbing old version of files
+// Deleting files
+// Uploading entire folders
 // Add grabbing part of the tree
 // Create packages for commands and that stuff
