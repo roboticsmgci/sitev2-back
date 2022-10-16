@@ -1,6 +1,8 @@
-*uploads
-*node_modules
-*bin
-*obj
-*.RoboHub.njsproj
-*.RoboHub.njsproj.user
+node_modules/
+.vs/
+bin/
+obj/
+.package.json
+.package-lock.json
+.RoboHub.njsproj.user
+.RoboHub.user
