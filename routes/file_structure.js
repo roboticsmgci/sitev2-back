@@ -73,11 +73,11 @@ router.route('/*')
                                 gfs.openDownloadStreamByName(fileData[0].filename).pipe(res);
                             })
                         }
+                        res.end();
                     })
                     .catch(err => console.log(err));
             })
             .catch(err => console.log(err));
-
     })
 
     // if a post request is ever made
@@ -121,7 +121,7 @@ router.route('/*')
                                             }
                                         }
                                     );
-                                    console.log(folderthing._id.toString());
+
                                 })
                                 .catch(err => res.status(500).json(err));
                         }

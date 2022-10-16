@@ -5,10 +5,34 @@ var folderSchema = require("../models/folder");
 var fileSchema = require("../models/file");
 const tool = require('../tools/fileTool');
 
+// Process Model
+let processSchema = require("../models/processes");
+
+// middleware that is specific to this router
+router.use((req, res, next) => {
+    console.log("hi");
+    if (req.originalURL == "/") {
+        next();
+    }
+    processSchema.find({ command: tool.pathBottom(req.originalUrl) })
+        .then((process) => {
+            if (process.length > 1) {
+                res.json({ response: "To be created", content: process });
+            }
+            console.log(process);
+            console.log(process.processPath);
+            var processFile = require(process[0].processPath);
+            router.use("/" + tool.pathBottom(req.originalUrl) + "/", processFile);
+        })
+        .catch(err => console.log(err));
+    next();
+})
+
 router.route('/')
 
-    .get((req, res) => {
-        res.json("kill me");
+    .get((req, res, next) => {
+        res.json("FUCK");
+        next();
     })
     // if a post request is ever made
     .post((req, res) => {

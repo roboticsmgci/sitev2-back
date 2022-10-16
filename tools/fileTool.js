@@ -37,7 +37,7 @@ module.exports = {
         for (let i = 0; i < path.length - back; i++) {
             pathString += path[i] + ',';
         };
-        console.log(pathString);
+
         return pathString
     },
 
@@ -51,6 +51,12 @@ module.exports = {
         };
 
         return path.at(-1);
+    },
+
+    pathBottom: function (rawPath) {
+        let path = rawPath.substring(1).split('/');
+
+        return path.at(0);
     },
 
     neighbours: function (path, type) {
@@ -99,7 +105,7 @@ module.exports = {
             nameList.push(item.fileName + item.fileExtension)
         });
         console.log("KIWRFHAIRH")
-        console.log(nameList);
+
         return nameList;
     },
 
